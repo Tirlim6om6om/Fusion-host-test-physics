@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Fusion;
+using Fusion.Addons.Physics;
 using Fusion.Sockets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,8 +13,16 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     private NetworkRunner _runner;
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private Transform spawn;
-    private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
+    public Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
+    public static BasicSpawner Instance;
     
+    
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+
     async void StartGame(GameMode mode)
     {
         // Create the Fusion runner and let it know that we will be providing user input
@@ -89,6 +98,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         if (Input.GetKey(KeyCode.D))
             data.direction += Vector3.right;
 
+        data.jump = Input.GetKeyDown(KeyCode.Space);
         input.Set(data);
     }
     
